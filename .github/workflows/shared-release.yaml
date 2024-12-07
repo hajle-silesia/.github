@@ -35,11 +35,15 @@ jobs:
           node-version: 22.12.0
       - name: Set up semantic-release
         run: |
+          # Official plugins: https://semantic-release.gitbook.io/semantic-release/extending/plugins-list
+          # Default plugins: https://semantic-release.gitbook.io/semantic-release/usage/plugins#default-plugins
+          # Plugins declaration and execution order: https://semantic-release.gitbook.io/semantic-release/usage/plugins#plugins-declaration-and-execution-order
           npx semantic-release@24.2.0 \
             --branches \
             master \
-            --plugins @semantic-release/commit-analyzer \
-            --plugins @semantic-release/release-notes-generator \
-            --plugins @semantic-release/github
+            --plugins \
+            @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator \
+            @semantic-release/github
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
