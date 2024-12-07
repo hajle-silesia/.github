@@ -6,9 +6,6 @@ on:
       - master
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   shared-release:
     name: Release
