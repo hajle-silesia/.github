@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shared-release:
+    name: Release
+    uses: hajle-silesia/.github/.github/workflows/shared-release.yaml@master
+    with:
+      token: ${{ secrets.PUSH_TOKEN }}
