@@ -13,5 +13,5 @@ jobs:
   shared-release:
     name: Release
     uses: hajle-silesia/.github/.github/workflows/shared-release.yaml@master
-    with:
+    secrets:
       token: ${{ secrets.PUSH_TOKEN }}
