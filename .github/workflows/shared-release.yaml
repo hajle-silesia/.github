@@ -38,9 +38,8 @@ jobs:
           npx semantic-release@24.2.0 \
             --branches \
             master \
-            --plugins \
-            @semantic-release/commit-analyzer \
-            @semantic-release/release-notes-generator \
-            @semantic-release/github
+            --plugins @semantic-release/commit-analyzer \
+            --plugins @semantic-release/release-notes-generator \
+            --plugins @semantic-release/github
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
