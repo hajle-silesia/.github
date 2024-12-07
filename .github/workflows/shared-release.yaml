@@ -1,6 +1,6 @@
 # Source: https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions
 # Source: https://github.com/semantic-release/semantic-release/blob/8fda7fd423d24e7b425fbee83790f49dd0478e2d/docs/recipes/ci-configurations/github-actions.md
-name: Release
+name: Shared release
 
 on:
   workflow_call:
@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 jobs:
-  release:
-    name: Release
+  shared-release:
+    name: Shared release
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release
