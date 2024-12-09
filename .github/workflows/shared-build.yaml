@@ -1,23 +1,7 @@
 name: Shared build
 
 on:
-  workflow_call:
-    inputs:
-      docker-hub-repository-name:
-        description: Docker Hub repository name
-        type: string
-        required: true
-      dockerfile-dir:
-        description: Directory containing Dockerfile
-        type: string
-        required: false
-    secrets:
-      docker-hub-username:
-        description: Docker Hub username
-        required: true
-      docker-hub-token:
-        description: Docker Hub token
-        required: true
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,6 +10,9 @@ jobs:
   shared-build:
     name: Shared build
     runs-on: ubuntu-latest
+    outputs:
+      docker-hub-repository-name: ${{ fromJSON(steps.meta.outputs.json).args['DOCKER_META_IMAGES'] }}
+      image-tag: ${{ fromJSON(steps.meta.outputs.json).args['DOCKER_META_VERSION'] }}
 
     steps:
       - name: Checkout
