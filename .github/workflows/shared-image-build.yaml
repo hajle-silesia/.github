@@ -1,31 +1,45 @@
-name: Shared build
+name: Shared image build
 
 on:
   workflow_call:
     inputs:
-      docker-hub-repository-name:
-        description: Docker Hub repository name
+      docker-hub-username:
+        description: Docker Hub username
         type: string
         required: true
-      dockerfile-dir:
+      docker-hub-namespace:
+        description: Docker Hub namespace
+        type: string
+        required: true
+      dir:
         description: Directory containing Dockerfile
         type: string
         required: false
     secrets:
-      docker-hub-username:
-        description: Docker Hub username
-        required: true
       docker-hub-token:
         description: Docker Hub token
         required: true
+    outputs:
+      docker-hub-repository-name:
+        description: Docker Hub repository name
+        value: ${{ jobs.shared-image-build.outputs.docker-hub-repository-name }}
+      tag:
+        description: Image tag
+        value: ${{ jobs.shared-image-build.outputs.tag }}
 
 permissions:
   contents: read
 
+env:
+  docker-hub-repository-name: ${{ inputs.docker-hub-namespace }}/${{ github.event.repository.name }}
+
 jobs:
-  shared-build:
-    name: Shared build
+  shared-image-build:
+    name: Shared image build
     runs-on: ubuntu-latest
+    outputs:
+      docker-hub-repository-name: ${{ env.docker-hub-repository-name }}
+      tag: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout
@@ -34,7 +48,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ inputs.docker-hub-repository-name }}
+          images: |
+            ${{ env.docker-hub-repository-name }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -45,7 +60,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.docker-hub-username }}
+          username: ${{ inputs.docker-hub-username }}
           password: ${{ secrets.docker-hub-token }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -54,7 +69,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.dockerfile-dir }}
+          context: ${{ inputs.dir }}
           platforms: linux/amd64, linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
