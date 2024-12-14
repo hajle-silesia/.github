@@ -1,0 +1,64 @@
+name: Shared chart build
+
+on:
+  workflow_call:
+    inputs:
+      docker-hub-registry:
+        description: Docker Hub registry
+        type: string
+        required: false
+        default: registry-1.docker.io
+      docker-hub-username:
+        description: Docker Hub username
+        type: string
+        required: true
+      docker-hub-namespace:
+        description: Docker Hub namespace
+        type: string
+        required: true
+      dir:
+        description: Directory containing Chart.yaml
+        type: string
+        required: true
+    secrets:
+      docker-hub-token:
+        description: Docker Hub token
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  shared-chart-build:
+    name: Shared chart build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Helm meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          tags: |
+            type=semver,pattern={{version}}
+          flavor: |
+            latest=false
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.docker-hub-token }}" | helm registry login ${{ inputs.docker-hub-registry }} \
+            --username ${{ inputs.docker-hub-username }} \
+            --password-stdin
+      - name: Package
+        id: package
+        run: |
+          response=$(helm package ${{ inputs.dir }} \
+            --version ${{ steps.meta.outputs.version }})
+          chart_archive_file=$(basename "${response}")
+          echo "chart-archive-file=$chart_archive_file" >> $GITHUB_OUTPUT
+      - name: Publish
+        if: github.event_name != 'pull_request'
+        run: |
+          helm push ${{ steps.package.outputs.chart-archive-file }} \
+            oci://${{ inputs.docker-hub-registry }}/${{ inputs.docker-hub-namespace }}
