@@ -1,4 +1,4 @@
-name: Shared chart build
+name: Shared chart package
 
 on:
   workflow_call:
@@ -29,8 +29,8 @@ permissions:
   contents: read
 
 jobs:
-  shared-chart-build:
-    name: Shared chart build
+  shared-chart-package:
+    name: Shared chart package
     runs-on: ubuntu-latest
 
     steps:
@@ -57,7 +57,7 @@ jobs:
             --version ${{ steps.meta.outputs.version }})
           chart_archive_file=$(basename "${response}")
           echo "chart-archive-file=$chart_archive_file" >> $GITHUB_OUTPUT
-      - name: Publish
+      - name: Push
         if: github.event_name != 'pull_request'
         run: |
           helm push ${{ steps.package.outputs.chart-archive-file }} \
