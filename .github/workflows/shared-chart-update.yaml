@@ -1,0 +1,48 @@
+name: Shared chart update
+
+on:
+  workflow_call:
+    inputs:
+      docker-hub-image-repository-name:
+        description: Docker Hub image repository name
+        type: string
+        required: true
+      image-tag:
+        description: Image tag
+        type: string
+        required: true
+    secrets:
+      github-token:
+        description: GitHub token
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  shared-chart-update:
+    name: Shared chart update
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}-config
+      - uses: fjogeleit/yaml-update-action@v0
+        with:
+          repository: ${{ github.repository }}-config
+          message: ${{ github.event.head_commit.message }}
+          token: ${{ secrets.github-token }}
+          changes: |
+            {
+              "charts/${{ github.event.repository.name }}/values.yaml": {
+                "image.repository": "${{ inputs.docker-hub-image-repository-name }}"
+              },
+              "charts/${{ github.event.repository.name }}/values.yaml": {
+                "image.tag": "${{ inputs.image-tag }}"
+              },
+              "charts/${{ github.event.repository.name }}/Chart.yaml": {
+                "appVersion": "${{ inputs.image-tag }}"
+              }
+            }            
