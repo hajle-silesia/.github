@@ -37,9 +37,7 @@ jobs:
           changes: |
             {
               "charts/${{ github.event.repository.name }}/values.yaml": {
-                "image.repository": "${{ inputs.docker-hub-image-repository-name }}"
-              },
-              "charts/${{ github.event.repository.name }}/values.yaml": {
+                "image.repository": "${{ inputs.docker-hub-image-repository-name }}",
                 "image.tag": "${{ inputs.image-tag }}"
               },
               "charts/${{ github.event.repository.name }}/Chart.yaml": {
