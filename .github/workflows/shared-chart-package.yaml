@@ -24,6 +24,13 @@ on:
       docker-hub-token:
         description: Docker Hub token
         required: true
+    outputs:
+      docker-hub-namespace:
+        description: Docker Hub namespace
+        value: ${{ inputs.shared-chart-package.outputs.docker-hub-namespace }}
+      version:
+        description: Chart version
+        value: ${{ jobs.shared-chart-package.outputs.version }}
 
 permissions:
   contents: read
@@ -32,6 +39,9 @@ jobs:
   shared-chart-package:
     name: Shared chart package
     runs-on: ubuntu-latest
+    outputs:
+      docker-hub-namespace: ${{ inputs.docker-hub-namespace }}
+      version: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout

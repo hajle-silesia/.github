@@ -1,0 +1,49 @@
+name: Shared app update
+
+on:
+  workflow_call:
+    inputs:
+      docker-hub-registry:
+        description: Docker Hub registry
+        type: string
+        required: false
+        default: registry-1.docker.io
+      docker-hub-namespace:
+        description: Docker Hub namespace
+        type: string
+        required: true
+      chart-version:
+        description: Chart version
+        type: string
+        required: true
+    secrets:
+      github-token:
+        description: GitHub token
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  shared-app-update:
+    name: Shared app update
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: container-orchestration-cd-config
+      - uses: fjogeleit/yaml-update-action@v0.15.0
+        with:
+          repository: container-orchestration-cd-config
+          message: ${{ github.event.head_commit.message }}
+          token: ${{ secrets.github-token }}
+          changes: |
+            {
+              "charts/${{ github.repository_owner }}/templates/${{ github.event.repository.name }}.yaml": {
+                "spec.sources[0].repoURL": "${{ inputs.docker-hub-registry }}/${{ inputs.docker-hub-namespace }}",
+                "spec.sources[0].targetRevision": "${{ inputs.chart-version }}",
+                "spec.sources[0].chart": "${{ github.event.repository.name }}"
+              }
+            }            

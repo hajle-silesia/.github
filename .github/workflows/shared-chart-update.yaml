@@ -41,6 +41,7 @@ jobs:
                 "image.tag": "${{ inputs.image-tag }}"
               },
               "charts/${{ github.event.repository.name }}/Chart.yaml": {
+                "name": "${{ github.event.repository.name }}-config",
                 "appVersion": "${{ inputs.image-tag }}"
               }
             }            
