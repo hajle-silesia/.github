@@ -27,7 +27,7 @@ on:
     outputs:
       docker-hub-namespace:
         description: Docker Hub namespace
-        value: ${{ inputs.shared-chart-package.outputs.docker-hub-namespace }}
+        value: ${{ inputs.docker-hub-namespace }}
       version:
         description: Chart version
         value: ${{ jobs.shared-chart-package.outputs.version }}
@@ -40,7 +40,6 @@ jobs:
     name: Shared chart package
     runs-on: ubuntu-latest
     outputs:
-      docker-hub-namespace: ${{ inputs.docker-hub-namespace }}
       version: ${{ steps.meta.outputs.version }}
 
     steps:
