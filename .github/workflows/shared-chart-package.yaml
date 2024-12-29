@@ -40,7 +40,7 @@ jobs:
     name: Shared chart package
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.meta.outputs.version }}
+      version: ${{ steps.package.outputs.version }}
 
     steps:
       - name: Checkout
@@ -62,8 +62,15 @@ jobs:
       - name: Package
         id: package
         run: |
+          if [[ -z "${{ steps.meta.outputs.version }}" ]]; then
+            version="0.0.0"
+          else
+            version="${{ steps.meta.outputs.version }}"
+          fi
+          echo "version=$version" >> $GITHUB_OUTPUT
+          
           response=$(helm package ${{ inputs.dir }} \
-            --version ${{ steps.meta.outputs.version }})
+            --version "${version}")
           chart_archive_file=$(basename "${response}")
           echo "chart-archive-file=$chart_archive_file" >> $GITHUB_OUTPUT
       - name: Push
