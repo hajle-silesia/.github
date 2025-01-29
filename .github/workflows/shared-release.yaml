@@ -32,7 +32,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22.13.1
       - name: Set up semantic-release
         run: |
           # Official plugins: https://semantic-release.gitbook.io/semantic-release/extending/plugins-list
