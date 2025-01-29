@@ -59,6 +59,9 @@ jobs:
           echo "${{ secrets.docker-hub-token }}" | helm registry login ${{ inputs.docker-hub-registry }} \
             --username ${{ inputs.docker-hub-username }} \
             --password-stdin
+      - name: Update dependencies
+        run: |
+          helm dependency update ${{ inputs.dir }}
       - name: Package
         id: package
         run: |
