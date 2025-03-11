@@ -1,4 +1,4 @@
-name: Shared test and static analysis
+name: Shared tests and static analysis
 
 on:
   workflow_call:
@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 jobs:
-  shared-test-and-statis-analysis:
-    name: Shared test and static analysis
+  shared-tests-and-statis-analysis:
+    name: Shared tests and static analysis
     runs-on: ubuntu-latest
     container:
       image: hajlesilesia/provisioning:0.44.0
