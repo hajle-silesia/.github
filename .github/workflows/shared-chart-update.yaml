@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}-config
-      - uses: fjogeleit/yaml-update-action@v0.16.0
+      - uses: fjogeleit/yaml-update-action@v0.16.1
         with:
           commitChange: ${{ github.event_name != 'pull_request' }}
           repository: ${{ github.repository }}-config
