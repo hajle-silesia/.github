@@ -30,7 +30,7 @@ jobs:
           # Source: https://semantic-release.gitbook.io/semantic-release/recipes/ci-configurations/github-actions#pushing-package.json-changes-to-your-repository
           persist-credentials: false
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22.13.1
       - name: Set up semantic-release
